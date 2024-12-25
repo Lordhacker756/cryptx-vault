@@ -19,6 +19,10 @@ const queryClient = new QueryClient();
 // 1. Get projectId at https://cloud.reown.com
 const projectId = process.env.PROJECT_ID;
 
+if (!projectId) {
+  throw new Error("Missing PROJECT_ID environment variable");
+}
+
 // 2. Create config
 const metadata = {
   name: "Garden",

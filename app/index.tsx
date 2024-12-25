@@ -11,6 +11,7 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { parseEther } from "viem";
 import {
@@ -38,10 +39,6 @@ export default function App() {
   const { data, isPending, isSuccess, isError, sendTransaction } =
     useSendTransaction();
 
-  const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-    hash: data?.hash,
-  });
-
   const onPress = () => {
     if (!recipient || !amount) return;
 
@@ -53,15 +50,15 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (isConfirmed) {
+    if (isSuccess) {
       setRecipient(null);
       setAmount("");
       refetchBalance();
     }
-  }, [isConfirmed]);
+  }, [isSuccess]);
 
   return (
-    <SafeAreaView
+    <ScrollView
       style={{
         flex: 1,
         paddingHorizontal: 20,
@@ -268,6 +265,6 @@ export default function App() {
           </Text>
         )}
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 }
