@@ -5,8 +5,8 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint"
@@ -20,6 +20,7 @@
     "@react-native-community/netinfo": "11.4.1",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
+    "@reown/appkit-auth-wagmi-react-native": "^1.1.1",
     "@reown/appkit-wagmi-react-native": "^1.1.1",
     "@tanstack/react-query": "^5.62.10",
     "@walletconnect/react-native-compat": "^2.17.3",
@@ -48,7 +49,7 @@
     "react-native-screens": "~4.4.0",
     "react-native-svg": "15.8.0",
     "react-native-web": "~0.19.13",
-    "react-native-webview": "13.12.5",
+    "react-native-webview": "^13.12.5",
     "viem": "^2.21.57",
     "wagmi": "^2.14.6"
   },

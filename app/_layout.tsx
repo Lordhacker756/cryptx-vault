@@ -10,6 +10,7 @@ import {
 import { Stack } from "expo-router";
 import * as Clipboard from "expo-clipboard";
 import { StatusBar } from "expo-status-bar";
+import { authConnector } from "@reown/appkit-auth-wagmi-react-native";
 
 // 0. Setup queryClient
 const queryClient = new QueryClient();
@@ -30,9 +31,15 @@ const metadata = {
   },
 };
 
-const chains = [mainnet, polygon, arbitrum] as const;
+  const auth = authConnector({ projectId, metadata });
+const chains = [sepolia] as const;
 
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+const wagmiConfig = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata,
+  extraConnectors: [auth],
+});
 
 // 3. Create modal
 createAppKit({
@@ -46,6 +53,11 @@ createAppKit({
     },
   },
   debug: true,
+  features: {
+    email: true, // default to true
+    socials: ["x", "discord", "apple"], // default value
+    emailShowWallets: true, // default to true
+  },
 });
 
 export default function RootLayout() {
