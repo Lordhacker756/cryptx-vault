@@ -1,39 +1,68 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import "@walletconnect/react-native-compat";
+import { WagmiProvider } from "wagmi";
+import { mainnet, polygon, arbitrum, sepolia } from "@wagmi/core/chains";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  createAppKit,
+  defaultWagmiConfig,
+  AppKit,
+} from "@reown/appkit-wagmi-react-native";
+import { Stack } from "expo-router";
+import * as Clipboard from "expo-clipboard";
+import { StatusBar } from "expo-status-bar";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+// 0. Setup queryClient
+const queryClient = new QueryClient();
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+// 1. Get projectId at https://cloud.reown.com
+const projectId = "7a028e760f8227b4723f6e277e9c615b";
+
+// 2. Create config
+const metadata = {
+  name: "Garden",
+  description:
+    "An example of how you can integrate Garden with AppKit in your own react native app",
+  url: "https://garden.finance",
+  icons: ["https://avatars.githubusercontent.com/u/179229932"],
+  redirect: {
+    native: "YOUR_APP_SCHEME://",
+    universal: "YOUR_APP_UNIVERSAL_LINK.com",
+  },
+};
+
+const chains = [mainnet, polygon, arbitrum] as const;
+
+const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+
+// 3. Create modal
+createAppKit({
+  projectId,
+  wagmiConfig,
+  defaultChain: sepolia, // Optional
+  enableAnalytics: true, // Optional - defaults to your Cloud configuration
+  clipboardClient: {
+    setString: async (value: string) => {
+      await Clipboard.setStringAsync(value);
+    },
+  },
+  debug: true,
+});
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <AppKit />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: {
+              backgroundColor: "black",
+            },
+          }}
+        />
+        <StatusBar style="auto" />
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }
