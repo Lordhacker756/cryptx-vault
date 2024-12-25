@@ -11,12 +11,13 @@ import { Stack } from "expo-router";
 import * as Clipboard from "expo-clipboard";
 import { StatusBar } from "expo-status-bar";
 import { authConnector } from "@reown/appkit-auth-wagmi-react-native";
+import { processEnvironment } from "@env";
 
 // 0. Setup queryClient
 const queryClient = new QueryClient();
 
 // 1. Get projectId at https://cloud.reown.com
-const projectId = "7a028e760f8227b4723f6e277e9c615b";
+const projectId = process.env.PROJECT_ID;
 
 // 2. Create config
 const metadata = {
@@ -31,7 +32,7 @@ const metadata = {
   },
 };
 
-  const auth = authConnector({ projectId, metadata });
+const auth = authConnector({ projectId, metadata });
 const chains = [sepolia] as const;
 
 const wagmiConfig = defaultWagmiConfig({
